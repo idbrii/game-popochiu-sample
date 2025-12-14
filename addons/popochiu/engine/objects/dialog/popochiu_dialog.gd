@@ -9,8 +9,20 @@ extends Resource
 ## The array of [PopochiuDialogOption] to show on screen when the dialog is running.
 @export var options: Array[PopochiuDialogOption] = [] : set = set_options
 
+var has_done_init := false
+
 
 #region Virtual ####################################################################################
+
+## Called when the dialog is first accessed (before it starts). [b]Return an
+## array of PopochiuDialogOptions created with [code]create_option()[/code][/b].
+## Overriding this function is optional. It allows you to configure your dialog
+## in code instead of using the Inspector.
+## [i]Virtual[/i].
+func _build_options():
+	return null
+
+
 ## Called when the dialog starts. [b]You have to use an [code]await[/code] in this method in order
 ## to make the dialog to work properly[/b].
 ## [i]Virtual[/i].
@@ -20,9 +32,16 @@ func _on_start() -> void:
 
 ## Called when the [param opt] dialog option is clicked. The [member PopochiuDialogOption.id] in
 ## [param opt] can be used to check which was the selected option.
+##
+## The base implementation automatically selects callbacks by option name
+## (option BYE will call [code]_on_option_BYE[/code]), so if you override you
+## do not need to call [code]super()[/code].
 ## [i]Virtual[/i].
 func _option_selected(opt: PopochiuDialogOption) -> void:
-	pass
+	var fn = "_on_option_" + opt.id
+	if has_method(fn):
+		await call(fn, opt)
+	_show_options()
 
 
 ## Called when the game is saved.
@@ -41,6 +60,28 @@ func _on_load(_data: Dictionary) -> void:
 #endregion
 
 #region Public #####################################################################################
+
+## Called before when a dialog is accessed. Internal-only; Do not call.
+func ensure_init():
+	if has_done_init:
+		return
+	has_done_init = true
+
+	var opts = _build_options()
+	if opts:
+		# Assume unintentional if you mix the two setups, because it will be
+		# confusing to come back to later.
+		assert(options.is_empty(), "Don't mix inspector-configured dialog options with _build_options.")
+		options.append_array(opts)
+
+
+## Call from within _build_options to construct your dialog instead of using the Inspector.
+func create_option(id):
+	var opt = PopochiuDialogOption.new()
+	opt.set_id(id)
+	return opt
+
+
 ## Starts this dialog, then [method _on_start] is called.[br][br]
 ## [i]This method is intended to be used inside a [method Popochiu.queue] of instructions.[/i]
 func queue_start() -> Callable:

@@ -65,3 +65,28 @@ func set_id(value: String) -> void:
 
 
 #endregion
+
+#region Builder #####################################################################################
+# Allow using the builder pattern to create options for succinct dialog setup.
+
+func with_text(v):
+	text = v
+	return self
+
+#func with_icon(v):
+#	icon = v
+#	return self
+
+func with_visible(v):
+	visible = v
+	return self
+
+func with_disabled(v):
+	disabled = v
+	return self
+
+func with_always_on(v):
+	always_on = v
+	return self
+
+#endregion

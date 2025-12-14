@@ -135,7 +135,9 @@ func get_instance(script_name: String) -> PopochiuDialog:
 		PopochiuUtils.print_error("Dialog [b]%s[/b] doesn't exist in the project" % script_name)
 		return null
 
-	return load(tres_path)
+	var d := load(tres_path)
+	d.ensure_init()
+	return d
 
 
 #endregion
