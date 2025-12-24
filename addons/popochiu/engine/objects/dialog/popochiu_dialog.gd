@@ -16,11 +16,20 @@ var has_done_init := false
 
 ## Called when the dialog is first accessed (before it starts). [b]Return an
 ## array of PopochiuDialogOptions created with [code]create_option()[/code][/b].
-## Overriding this function is optional. It allows you to configure your dialog
-## in code instead of using the Inspector.
+## To mix creating options from code and inspector, add your options to
+## [code]existing_options[/code]:
+## [code]
+## return existing_options + [
+##     create_option("Joke1")
+##       .with_text("How do you call a magic dog?"),
+## ]
+## [/code]
+##
+## Overriding this function is optional and unnecessary if you prefer to
+## configure your dialog using the Inspector.
 ## [i]Virtual[/i].
-func _build_options():
-	return null
+func _on_build_options(existing_options: Array[PopochiuDialogOption]) -> Array[PopochiuDialogOption]:
+	return existing_options
 
 
 ## Called when the dialog starts. [b]You have to use an [code]await[/code] in this method in order
@@ -67,15 +76,11 @@ func ensure_init():
 		return
 	has_done_init = true
 
-	var opts = _build_options()
-	if opts:
-		# Assume unintentional if you mix the two setups, because it will be
-		# confusing to come back to later.
-		assert(options.is_empty(), "Don't mix inspector-configured dialog options with _build_options.")
-		options.append_array(opts)
+	options = _on_build_options(options)
 
 
-## Call from within _build_options to construct your dialog instead of using the Inspector.
+## Call from within _on_build_options to populate your dialog options (instead
+## of using the Inspector).
 func create_option(id):
 	var opt = PopochiuDialogOption.new()
 	opt.set_id(id)

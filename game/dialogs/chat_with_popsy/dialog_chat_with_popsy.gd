@@ -14,7 +14,7 @@ func _on_start() -> void:
 	await E.get_tree().process_frame
 
 
-func _build_options():
+func _on_build_options(_existing_options: Array[PopochiuDialogOption]):
 	return [
 		create_option("StopWhining")
 			.with_text("Can you please stop whining for some minutes?")
