@@ -19,10 +19,12 @@ var has_done_init := false
 ## To mix creating options from code and inspector, add your options to
 ## [code]existing_options[/code]:
 ## [code]
-## return existing_options + [
-##     create_option("Joke1")
-##       .with_text("How do you call a magic dog?"),
+## existing_options.append_array([
+##     create_option("Joke1", {
+##       text = "How do you call a magic dog?",
+##     }),
 ## ]
+## return existing_options
 ## [/code]
 ##
 ## Overriding this function is optional and unnecessary if you prefer to
@@ -76,14 +78,26 @@ func ensure_init():
 		return
 	has_done_init = true
 
-	options = _on_build_options(options)
+	var opts = _on_build_options(options) as Array[PopochiuDialogOption]
+
+	# Avoid array type mismatch error in set_options so users aren't required
+	# to use type hints.
+	var typed_opts: Array[PopochiuDialogOption] = []
+	typed_opts.assign(opts)
+	options = typed_opts
 
 
 ## Call from within _on_build_options to populate your dialog options (instead
 ## of using the Inspector).
-func create_option(id):
+## [code]config[/code]
+func create_option(id: String, config: Dictionary = {}) -> PopochiuDialogOption:
 	var opt = PopochiuDialogOption.new()
 	opt.set_id(id)
+	if not config.is_empty():
+		opt.configure(config)
+		if opt.text.is_empty():
+			# User made a typo or forgot essential element in their construction dictionary.
+			PopochiuUtils.print_error("PopochiuDialogOption '%s' needs text to appear in a conversation: create_option('%s', { text = 'Hello.' })" % [id, id])
 	return opt
 
 
@@ -172,7 +186,6 @@ func set_options(value: Array[PopochiuDialogOption]) -> void:
 			new_opt.id = id
 			new_opt.text = 'Option %d' % options.size()
 			options[idx] = new_opt
-
 
 #endregion
 

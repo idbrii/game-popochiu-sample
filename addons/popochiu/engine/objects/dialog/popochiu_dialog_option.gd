@@ -54,6 +54,27 @@ func turn_off_forever() -> void:
 	disabled = true
 
 
+func set_text(v):
+	text = v
+
+
+#func set_icon(v):
+#	icon = v
+
+
+func set_always_on(v):
+	always_on = v
+
+
+## Used internally to populate a PopochiuDialogOption.
+func configure(config: Dictionary) -> void:
+	text = config.get("text", text)
+#	icon = config.get("icon", icon)
+	visible = config.get("visible", visible)
+	disabled = config.get("disabled", disabled)
+	always_on = config.get("always_on", always_on)
+
+
 #endregion
 
 #region SetGet #####################################################################################
@@ -63,30 +84,5 @@ func set_id(value: String) -> void:
 	script_name = id
 	resource_name = id
 
-
-#endregion
-
-#region Builder #####################################################################################
-# Allow using the builder pattern to create options for succinct dialog setup.
-
-func with_text(v):
-	text = v
-	return self
-
-#func with_icon(v):
-#	icon = v
-#	return self
-
-func with_visible(v):
-	visible = v
-	return self
-
-func with_disabled(v):
-	disabled = v
-	return self
-
-func with_always_on(v):
-	always_on = v
-	return self
 
 #endregion

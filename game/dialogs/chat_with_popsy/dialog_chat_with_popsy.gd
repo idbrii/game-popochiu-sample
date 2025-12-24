@@ -14,25 +14,36 @@ func _on_start() -> void:
 	await E.get_tree().process_frame
 
 
-func _on_build_options(_existing_options: Array[PopochiuDialogOption]):
+#~ func _on_build_options(existing_options: Array[PopochiuDialogOption]):
+#~ 	return _existing_options + [
+#~ 		create_option("StopWhining", {
+#~ 				text = "Can you please stop whining for some minutes?",
+#~ 			}),
+#~ 		]
+
+func _on_build_options(_existing_options: Array[PopochiuDialogOption]) -> Array[PopochiuDialogOption]:
+	# Create each option and then add to the array:
+	var no_whine = create_option("StopWhining")
+	no_whine.text = "Can you please stop whining for some minutes?"
+
 	return [
-		create_option("StopWhining")
-			.with_text("Can you please stop whining for some minutes?")
-			,
+		no_whine,
 
-		create_option("OfferHelp")
-			.with_text("What can I do for you?")
-			.with_visible(false)
-			,
+		# Or pass a dictionary to create in one block:
+		create_option("OfferHelp", {
+				text = "What can I do for you?",
+				visible = false,
+			}),
 
-		create_option("PickToy")
-			.with_text("Can you please pick up your toys?")
-			,
+		create_option("PickToy", {
+				text = "Can you please pick up your toys?",
+			}),
 
-		create_option("Bye")
-			.with_text("Going get you some food, hold on.")
-			,
+		create_option("Bye", {
+				text = "Going get you some food, hold on.",
+			}),
 	]
+
 
 func _on_option_StopWhining(opt: PopochiuDialogOption):
 	await C.Popsy.say("Bwaaah! I'm hungry!!!", "sad")
