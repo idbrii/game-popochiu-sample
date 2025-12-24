@@ -18,10 +18,10 @@ extends Node
 ## # Add the Key item to the inventory and make it the selected one.
 ## I.Key.add_as_active()
 ##
-## # Remove the Card item from the inventory. Inside an E.run([])
+## # Remove the Card item from the inventory.
 ## I.Card.remove()
 ##
-## # Add the ToyCar item after some dialog lines
+## # Add the ToyCar item after some dialog lines.
 ## E.queue([
 ##     "Player: Oh, is the toy car I need",
 ##     I.ToyCar.queue_add(),
@@ -173,6 +173,12 @@ func set_active_item(item: PopochiuInventoryItem = null) -> void:
 func is_item_in_inventory(item_name: String) -> bool:
 	var i: PopochiuInventoryItem = get_item_instance(item_name)
 	return is_instance_valid(i) and i.in_inventory
+
+
+## Verifies if the item identified as [param item_name] has ever been collected.
+func has_item_been_collected(item_name: String) -> bool:
+	var i: PopochiuInventoryItem = get_item_instance(item_name)
+	return is_instance_valid(i) and i.ever_collected
 
 
 ## Checks whether the inventory has reached its limit.

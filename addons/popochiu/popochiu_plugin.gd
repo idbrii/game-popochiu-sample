@@ -57,7 +57,6 @@ func _enter_tree() -> void:
 	# ---- Load Popochiu's Inspector plugins -------------------------------------------------------
 	for path in [
 		"res://addons/popochiu/editor/inspector/character_inspector_plugin.gd",
-		"res://addons/popochiu/editor/inspector/aseprite_importer_inspector_plugin.gd",
 		"res://addons/popochiu/editor/inspector/audio_cue_inspector_plugin.gd",
 		"res://addons/popochiu/editor/inspector/prop_inspector_plugin.gd",
 	]:
@@ -73,7 +72,7 @@ func _enter_tree() -> void:
 	dock.focus_mode = Control.FOCUS_ALL
 	dock.ready.connect(_on_dock_ready)
 	
-	add_control_to_dock(DOCK_SLOT_RIGHT_BL, dock)
+	add_control_to_dock(DOCK_SLOT_LEFT_UL, dock)
 	
 	# ---- Add Popochiu's menus for the Canvas Editor ----------------------------------------------
 	add_control_to_container(
@@ -102,6 +101,7 @@ func _exit_tree() -> void:
 func _enable_plugin() -> void:
 	_create_input_actions()
 	EditorInterface.set_plugin_enabled("popochiu/editor/gizmos", true)
+	EditorInterface.set_plugin_enabled("popochiu/editor/importers", true)
 
 
 func _disable_plugin() -> void:
@@ -116,6 +116,7 @@ func _disable_plugin() -> void:
 	remove_autoload_singleton("A")
 	_remove_input_actions()
 	EditorInterface.set_plugin_enabled("popochiu/editor/gizmos", false)
+	EditorInterface.set_plugin_enabled("popochiu/editor/importers", false)
 	remove_control_from_docks(dock)
 
 
@@ -178,15 +179,19 @@ func _on_dock_ready() -> void:
 	else:
 		dock.check_open_scenes()
 	
+	PopochiuResources.create_auto_loads()
 	PopochiuResources.update_autoloads(true)
 	_editor_file_system.scan_sources()
 	dock.fill_data()
 	
 	if not PopochiuResources.is_setup_done() or not PopochiuResources.is_gui_set():
-		PopochiuEditorHelper.show_setup(true)
+		PopochiuEditorHelper.show_setup()
 	
 	if not EditorInterface.is_plugin_enabled("popochiu/editor/gizmos"):
 		EditorInterface.set_plugin_enabled("popochiu/editor/gizmos", true)
+
+	if not EditorInterface.is_plugin_enabled("popochiu/editor/importers"):
+		EditorInterface.set_plugin_enabled("popochiu/editor/importers", true)
 
 
 #endregion
