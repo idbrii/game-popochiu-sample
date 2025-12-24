@@ -44,14 +44,11 @@ func _on_start() -> void:
 ## Called when the [param opt] dialog option is clicked. The [member PopochiuDialogOption.id] in
 ## [param opt] can be used to check which was the selected option.
 ##
-## The base implementation automatically selects callbacks by option name
-## (option BYE will call [code]_on_option_BYE[/code]), so if you override you
-## do not need to call [code]super()[/code].
+## Instead of overriding this function, you can write functions for each option using their
+## [snake_case](https://docs.godotengine.org/en/stable/classes/class_string.html#class-string-method-to-snake-case)
+## name (option BYE2 will call [code]_on_option_bye_2[/code]).
 ## [i]Virtual[/i].
 func _option_selected(opt: PopochiuDialogOption) -> void:
-	var fn = "_on_option_" + opt.id
-	if has_method(fn):
-		await call(fn, opt)
 	_show_options()
 
 
@@ -219,6 +216,10 @@ func _on_option_selected(opt: PopochiuDialogOption) -> void:
 	PopochiuUtils.d.selected_option = opt
 	
 	_option_selected(opt)
+
+	var fn = "_on_option_" + opt.id.to_snake_case()
+	if has_method(fn):
+		await call(fn, opt)
 
 
 #endregion
