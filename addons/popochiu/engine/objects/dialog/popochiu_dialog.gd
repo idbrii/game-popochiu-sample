@@ -15,20 +15,20 @@ var has_done_init := false
 #region Virtual ####################################################################################
 
 ## Called when the dialog is first accessed (before it starts). [b]Return an
-## array of PopochiuDialogOptions created with [code]create_option()[/code][/b].
+## array of PopochiuDialogOptions created with [method create_option][/b].
 ## To mix creating options from code and inspector, add your options to
-## [code]existing_options[/code]:
-## [code]
+## [param existing_options]:
+## [codeblock]
 ## existing_options.append_array([
 ##     create_option("Joke1", {
 ##       text = "How do you call a magic dog?",
 ##     }),
 ## ]
 ## return existing_options
-## [/code]
+## [/codeblock]
 ##
-## Overriding this function is optional and unnecessary if you prefer to
-## configure your dialog using the Inspector.
+## Overriding this function is optional. Instead you can configure your
+## dialog using the Inspector.
 ## [i]Virtual[/i].
 func _on_build_options(existing_options: Array[PopochiuDialogOption]) -> Array[PopochiuDialogOption]:
 	return existing_options
@@ -69,24 +69,20 @@ func _on_load(_data: Dictionary) -> void:
 
 #region Public #####################################################################################
 
-## Called before when a dialog is accessed. Internal-only; Do not call.
-func ensure_init():
-	if has_done_init:
-		return
-	has_done_init = true
-
-	var opts = _on_build_options(options) as Array[PopochiuDialogOption]
-
-	# Avoid array type mismatch error in set_options so users aren't required
-	# to use type hints.
-	var typed_opts: Array[PopochiuDialogOption] = []
-	typed_opts.assign(opts)
-	options = typed_opts
-
-
-## Call from within _on_build_options to populate your dialog options (instead
+## Call from within [method _on_build_options] to populate your dialog options (instead
 ## of using the Inspector).
-## [code]config[/code]
+## [param config] is optional and lets you create the list of options in one block:
+## [codeblock]
+## return [
+##     create_option("OfferHelp", {
+##             text = "What can I do for you?",
+##         }),
+##     create_option("Bye", {
+##             text = "Going get you some food, hold on.",
+##             visible = false,
+##         }),
+## ]
+## [/codeblock]
 func create_option(id: String, config: Dictionary = {}) -> PopochiuDialogOption:
 	var opt = PopochiuDialogOption.new()
 	opt.set_id(id)
@@ -187,6 +183,21 @@ func set_options(value: Array[PopochiuDialogOption]) -> void:
 #endregion
 
 #region Private ####################################################################################
+
+# For internal engine use only. Called before when a dialog is accessed.
+func ensure_init():
+	if has_done_init:
+		return
+	has_done_init = true
+
+	var opts = _on_build_options(options)
+
+	# Must assign correct array type to options. Rebuild so users aren't
+	# required to use type hints.
+	var typed_opts: Array[PopochiuDialogOption] = [].assign(opts)
+	options = typed_opts
+
+
 func _start() -> void:
 	PopochiuUtils.g.block()
 	PopochiuUtils.d.dialog_started.emit(self)
@@ -217,6 +228,7 @@ func _on_option_selected(opt: PopochiuDialogOption) -> void:
 	
 	_option_selected(opt)
 
+	# Convert option so function names match Godot coding guidelines.
 	var fn = "_on_option_" + opt.id.to_snake_case()
 	if has_method(fn):
 		await call(fn, opt)

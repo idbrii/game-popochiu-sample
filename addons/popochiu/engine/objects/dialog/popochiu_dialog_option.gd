@@ -54,6 +54,16 @@ func turn_off_forever() -> void:
 	disabled = true
 
 
+#endregion
+
+#region SetGet #####################################################################################
+func set_id(value: String) -> void:
+	id = value
+	
+	script_name = id
+	resource_name = id
+
+
 func set_text(v):
 	text = v
 
@@ -66,23 +76,16 @@ func set_always_on(v):
 	always_on = v
 
 
-## Used internally to populate a PopochiuDialogOption.
+#endregion
+
+#region Private ####################################################################################
+
+# Used internally to populate a PopochiuDialogOption.
 func configure(config: Dictionary) -> void:
 	text = config.get("text", text)
 #	icon = config.get("icon", icon)
 	visible = config.get("visible", visible)
 	disabled = config.get("disabled", disabled)
 	always_on = config.get("always_on", always_on)
-
-
-#endregion
-
-#region SetGet #####################################################################################
-func set_id(value: String) -> void:
-	id = value
-	
-	script_name = id
-	resource_name = id
-
 
 #endregion
