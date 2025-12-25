@@ -86,3 +86,6 @@ libraries = {
 "": SubResource("AnimationLibrary_i1p7x")
 }
 autoplay = "bg"
+
+[node name="ObstaclePolygon" type="NavigationObstacle2D" parent="."]
+affect_navigation_mesh = true

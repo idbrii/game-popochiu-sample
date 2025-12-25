@@ -6,6 +6,13 @@ signal slot_selected
 const SELECTION_COLOR := Color("edf171")
 const OVERWRITE_COLOR := Color("c46c71")
 
+## The [code]script_name[/code] used to open the Save popup when the
+## [signal PopochiuIGraphicInterface.popup_requested] signal is triggered.
+@export var save_popup_script_name := &"SavePopup"
+## The [code]script_name[/code] used to open the Load popup when the
+## [signal PopochiuIGraphicInterface.popup_requested] signal is triggered.
+@export var load_popup_script_name := &"LoadPopup"
+
 var _current_slot: Button = null
 var _slot_name := ""
 var _prev_text := ""
@@ -22,7 +29,7 @@ func _ready() -> void:
 	
 	btn_ok.disabled = true
 	
-	var saves: Dictionary = E.get_saves_descriptions()
+	var saves: Dictionary = PopochiuUtils.e.get_saves_descriptions()
 	
 	for btn: Button in slots.get_children():
 		btn.set_meta("has_save", false)
@@ -57,9 +64,9 @@ func _close() -> void:
 	slot_selected.emit()
 	
 	if _slot_name:
-		E.save_game(_slot, _slot_name)
+		PopochiuUtils.e.save_game(_slot, _slot_name)
 	else:
-		E.load_game(_slot)
+		PopochiuUtils.e.load_game(_slot)
 
 
 func _on_ok() -> void:
@@ -68,8 +75,6 @@ func _on_ok() -> void:
 	if _slot_name:
 		_prev_text = _current_slot.text
 		_current_slot.set_meta("has_save", true)
-	
-	close()
 
 
 #endregion
@@ -86,6 +91,15 @@ func open_load() -> void:
 #endregion
 
 #region Private ####################################################################################
+func _on_popup_requested(popup_script_name: StringName) -> void:
+	if popup_script_name == save_popup_script_name:
+		_show_save()
+	elif popup_script_name == load_popup_script_name:
+		_show_load()
+	else:
+		super(popup_script_name)
+
+
 func _show_save(slot_text := "") -> void:
 	lbl_title.text = "Choose a slot to save the game"
 	_slot_name = slot_text

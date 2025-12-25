@@ -15,7 +15,6 @@ script = ExtResource("1_jpjo6")
 script_name = "Outside"
 width = 448
 height = 200
-popochiu_placeholder = null
 metadata/_popochiu_aseprite_config_ = {
 "o_folder": "",
 "o_name": "",
@@ -101,6 +100,7 @@ interaction_polygon = PackedVector2Array(-93, -30, -67, -33, -60, -16, -45, -16,
 [node name="Markers" type="Node2D" parent="."]
 
 [node name="EnterPos" parent="Markers" instance=ExtResource("8_jdih4")]
+visible = false
 position = Vector2(178, 100)
 
 [node name="Characters" type="Node2D" parent="."]

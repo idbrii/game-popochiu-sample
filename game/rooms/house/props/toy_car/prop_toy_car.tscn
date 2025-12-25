@@ -82,3 +82,6 @@ libraries = {
 "": SubResource("AnimationLibrary_efiwg")
 }
 autoplay = "toy_car"
+
+[node name="ObstaclePolygon" type="NavigationObstacle2D" parent="."]
+affect_navigation_mesh = true

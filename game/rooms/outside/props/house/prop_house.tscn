@@ -84,3 +84,6 @@ libraries = {
 "": SubResource("AnimationLibrary_mruym")
 }
 autoplay = "house"
+
+[node name="ObstaclePolygon" type="NavigationObstacle2D" parent="."]
+affect_navigation_mesh = true

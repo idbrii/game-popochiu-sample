@@ -82,3 +82,6 @@ hframes = 2
 libraries = {
 "": SubResource("AnimationLibrary_tafkb")
 }
+
+[node name="ObstaclePolygon" type="NavigationObstacle2D" parent="."]
+affect_navigation_mesh = true

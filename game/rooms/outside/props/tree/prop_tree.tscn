@@ -85,3 +85,6 @@ frame = 1
 libraries = {
 "": SubResource("AnimationLibrary_77rgy")
 }
+
+[node name="ObstaclePolygon" type="NavigationObstacle2D" parent="."]
+affect_navigation_mesh = true

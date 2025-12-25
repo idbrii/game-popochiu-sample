@@ -86,3 +86,6 @@ libraries = {
 "": SubResource("AnimationLibrary_tqcl1")
 }
 autoplay = "background"
+
+[node name="ObstaclePolygon" type="NavigationObstacle2D" parent="."]
+affect_navigation_mesh = true
